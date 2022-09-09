@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
 {% block body %}
-Hi! {{ fish_name }}
+
+    {{availibleFish}}
+    <br>
+    <h3>{{numFish}} fish currently availible </h3>
+    <br>
+    {{availableSea}}
+    <br>
+    <h3>{{numSea}} sea creatures currently available </h3>
+    <br>
+    {{availableBugs}}
+    <br>
+    <h3>{{numBugs}} bugs currently available</h3>
+
 {% endblock %}
