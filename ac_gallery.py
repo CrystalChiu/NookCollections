@@ -40,7 +40,6 @@ def toArray_months(monthRange):
 
             monthNum += 1
             numIterations -= 1
-        # end while 
     else:
         for i in range(12):
             months.append((i + 1))
@@ -68,7 +67,7 @@ def toArray_times(timeRange):
             times.append(start_time + i)
     else:
         for i in range(24):
-            times.append((i + 1))
+            times.append((i))
     
     return times
 
@@ -119,8 +118,7 @@ def index():
     availableBugs = availableCritter("bugs", 80)
     numBugs = len(availableBugs)
 
-    # once we have our completed array of fish, return to jinja template
-    # repeat for sea creatures and insects
+    # once we have our completed array of critters, return to jinja template
     return render_template('index.html', availibleFish = availableFish, numFish = numFish, availableSea = availableSea, 
                             numSea = numSea, availableBugs = availableBugs, numBugs = numBugs)
 
