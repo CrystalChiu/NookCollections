@@ -9,15 +9,19 @@ from datetime import datetime
 #NOTE: add unit tests to below function
 
 # expecting input in the form "11 - 3" as given from ACNH API
-# returns as an array of ints of all months inbtwn 11 & 3
+# Returns list of bools with TRUE in available months
+# Returns list of TRUE if available around the year
 def toArray_months(monthRange):
     
     months = list()
-    
+
     regex = r"(\d+)-(\d+)"
     result = re.search(regex, monthRange)
 
     if(result != None):
+        for i in range(12):
+            months.append(FALSE)
+
         start = int(result.group(1)) # start month (1-12)
         end = int(result.group(2)) # end month (1-12)
 
@@ -34,25 +38,30 @@ def toArray_months(monthRange):
 
         while numIterations != 0:
             if(monthNum <= 12):
-                months.append(monthNum)
+                months[monthNum - 1] = TRUE
             else:
-                months.append(monthNum - 12)
+                months[monthNum - 13] = TRUE
 
             monthNum += 1
             numIterations -= 1
     else:
         for i in range(12):
-            months.append((i + 1))
+            months.append(TRUE)
 
     return months
 
+# Takes string from API in the form "11am - 3pm"
+# Returns list of bools with TRUE in available times
+# Returns list of TRUE if available around the clock
 def toArray_times(timeRange):
     times = list()
-
     regex = r"(\d+)(\w\w)\s-\s(\d+)(\w\w)"
     result = re.search(regex, timeRange)
 
     if(result != None):
+        for i in range(24):
+            times.append(FALSE)
+
         start_time = int(result.group(1))
         start_meridiem = str(result.group(2))
         end_time = int(result.group(3))
@@ -64,13 +73,16 @@ def toArray_times(timeRange):
             end_time += 12
 
         for i in range ((end_time - start_time) + 1):
-            times.append(start_time + i)
+            times[start_time + i] = TRUE
     else:
         for i in range(24):
-            times.append((i))
-    
+            times.append(TRUE)
+
     return times
 
+# Checks if each critter has availability in the current month/time
+# If both are true - add to available critters list
+# Returns list of avalailable critter names as string
 def availableCritter(critterType, numCritters):
     availableCritters = list()
     curTime = datetime.now().hour
@@ -88,14 +100,12 @@ def availableCritter(critterType, numCritters):
         availableTimes = toArray_times(response.json()['availability']['time'])
 
         #if current month is in included months ...
-        for month in availableMonths:
-            if(month == curMonth):
-                correctMonth = TRUE
+        if(availableMonths[curMonth - 1] == TRUE):
+            correctMonth = TRUE
 
         #if current time is in included times ...
-        for hour in availableTimes:
-            if(hour == curTime):
-                correctTime = TRUE
+        if(availableTimes[curTime] == TRUE):
+            correctTime = TRUE
 
         if(correctMonth == TRUE and correctTime == TRUE):
             critter = response.json()['file-name']
