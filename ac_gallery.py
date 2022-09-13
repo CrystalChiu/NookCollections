@@ -14,7 +14,7 @@ def toArray_months(monthRange):
     
     months = list()
     
-    regex = r"(\d+)\s-\s(\d+)"
+    regex = r"(\d+)-(\d+)"
     result = re.search(regex, monthRange)
 
     if(result != None):
@@ -31,8 +31,8 @@ def toArray_months(monthRange):
 
         # adding each month number to included months array
         monthNum = start
-        while numIterations != 0:
 
+        while numIterations != 0:
             if(monthNum <= 12):
                 months.append(monthNum)
             else:
@@ -43,7 +43,7 @@ def toArray_months(monthRange):
         # end while 
     else:
         for i in range(12):
-            months.append(i)
+            months.append((i + 1))
 
     return months
 
@@ -68,7 +68,7 @@ def toArray_times(timeRange):
             times.append(start_time + i)
     else:
         for i in range(24):
-            times.append(i)
+            times.append((i + 1))
     
     return times
 
@@ -86,7 +86,7 @@ def availableCritter(critterType, numCritters):
         response = requests.get(f'https://acnhapi.com/v1/{critterType}/{critter_id}')
 
         availableMonths = toArray_months(response.json()['availability']['month-northern'])
-        availibleTimes = toArray_times(response.json()['availability']['time'])
+        availableTimes = toArray_times(response.json()['availability']['time'])
 
         #if current month is in included months ...
         for month in availableMonths:
@@ -94,7 +94,7 @@ def availableCritter(critterType, numCritters):
                 correctMonth = TRUE
 
         #if current time is in included times ...
-        for hour in availibleTimes:
+        for hour in availableTimes:
             if(hour == curTime):
                 correctTime = TRUE
 
