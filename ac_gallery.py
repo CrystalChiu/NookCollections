@@ -1,11 +1,13 @@
 from ipaddress import ip_address
 from pickle import FALSE, TRUE
-from flask import Flask, render_template, request_started, url_for, jsonify, request
+from flask import Flask, render_template, request_started, url_for, jsonify, request, send_file
 import requests
 from requests import get
 import re
 from datetime import datetime
 
+
+#<------------------Supplemental Functions------------------>
 #NOTE: add unit tests to below function
 
 # expecting input in the form "11 - 3" as given from ACNH API
@@ -14,12 +16,13 @@ from datetime import datetime
 def toArray_months(monthRange):
     
     months = list()
+    CONST_months = 12
 
     regex = r"(\d+)-(\d+)"
     result = re.search(regex, monthRange)
 
     if(result != None):
-        for i in range(12):
+        for i in range(CONST_months):
             months.append(FALSE)
 
         start = int(result.group(1)) # start month (1-12)
@@ -30,7 +33,7 @@ def toArray_months(monthRange):
         if(end >= start):
             numIterations = end - start
         else:
-            numIterations = (end + 12) - start
+            numIterations = (end + CONST_months) - start
         numIterations += 1
 
         # adding each month number to included months array
@@ -45,7 +48,7 @@ def toArray_months(monthRange):
             monthNum += 1
             numIterations -= 1
     else:
-        for i in range(12):
+        for i in range(CONST_months):
             months.append(TRUE)
 
     return months
@@ -113,35 +116,28 @@ def availableCritter(critterType, numCritters):
         
     return availableCritters
 
+#<------------------Flask------------------>
+
 app = Flask(__name__)
 #make a new page for index
 @app.route("/")
 def index():
     ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
 
-    availableFish = availableCritter("fish", 80)
-    numFish = len(availableFish)
+    #availableFish = availableCritter("fish", 80)
+   #numFish = len(availableFish)
 
-    availableSea = availableCritter("sea", 40)
-    numSea = len(availableSea)
+    #availableSea = availableCritter("sea", 40)
+    #numSea = len(availableSea)
 
-    availableBugs = availableCritter("bugs", 80)
-    numBugs = len(availableBugs)
+    #availableBugs = availableCritter("bugs", 80)
+    #numBugs = len(availableBugs)
 
     # once we have our completed array of critters, return to jinja template
-    return render_template('index.html', availibleFish = availableFish, numFish = numFish, availableSea = availableSea, 
-                            numSea = numSea, availableBugs = availableBugs, numBugs = numBugs)
-
-@app.route('/fish/<fish_id>')
-def fish(fish_id):
-    response = requests.get(f"https://acnhapi.com/v1/fish/{fish_id}/")
-    fish_name = response.json()['file-name']
-
-    # we need a loop that returns all fish to render template
-
-    return render_template('index.html', fish_name = fish_name) 
-    #left = name of new variable in jinja template; right = value we assign to new var
-    #common convention -> name them the same thing
+    #return render_template('index.html', availibleFish = availableFish, numFish = numFish, availableSea = availableSea, 
+                           # numSea = numSea, availableBugs = availableBugs, numBugs = numBugs)
+    
+    return render_template("index.html")
 
 if __name__ == '__main__':
     app.run()

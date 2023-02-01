@@ -1,17 +1,23 @@
 {% extends "base.html" %}
 
 {% block body %}
+    <div class="icon-display" onload=displayImgs()>
 
-    {{availibleFish}}
-    <br>
-    <h3>{{numFish}} fish currently availible </h3>
-    <br>
-    {{availableSea}}
-    <br>
-    <h3>{{numSea}} sea creatures currently available </h3>
-    <br>
-    {{availableBugs}}
-    <br>
-    <h3>{{numBugs}} bugs currently available</h3>
+    {% for n in range(1,80) %}
+        <img class="fish" src="{{ url_for('static', filename = 'images/fish/' + n|string() + '.png') }}">
+    {% endfor %}
 
+    <br>
+
+    {% for n in range(1,80) %}
+        <img class="bugs" src="{{ url_for('static', filename = 'images/bugs/' + n|string() + '.png') }}">
+    {% endfor %}
+
+    <br>
+
+    {% for n in range(1,40) %}
+        <img class="sea" src="{{ url_for('static', filename = 'images/sea/' + n|string() + '.png') }}">
+    {% endfor %}
+
+    </div>
 {% endblock %}
