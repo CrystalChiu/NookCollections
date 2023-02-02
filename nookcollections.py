@@ -11,7 +11,9 @@ app = Flask(__name__)
 
 # O(1) time, O(1) space
 def validTime(timeRange, curTime):
-    regex = r"(\d+)(\w\w)\s-\s(\d+)(\w\w)"
+    #<------------------Chris' Comments------------------>
+
+    regex = r"(\d+)(\w\w)\s-\s(\d+)(\w\w)" # Should we restrict the regex to up to 2 digits: {1,2}
     result = re.search(regex, timeRange)
 
     # when None is returned, there is no time -> always available
@@ -39,7 +41,9 @@ def validTime(timeRange, curTime):
 
 # O(n) time, O(1) space
 def validMonth(monthRange, curMonth):
-    regex = r"(\d+)-(\d+)"
+    #<------------------Chris' Comments------------------>
+    
+    regex = r"(\d+)-(\d+)" # Should we restrict the regex to up to 2 digits: {1,2}
     result = re.search(regex, monthRange)
     NUM_MONTHS = 12
 
@@ -49,16 +53,26 @@ def validMonth(monthRange, curMonth):
         startMonth = int(result.group(1)) # start month (1-12)
         endMonth = int(result.group(2)) # end month (1-12)
 
-        if(curMonth >= startMonth):
-            if(curMonth >= startMonth and curMonth <= 12):
-                return True
-            elif (curMonth >= 1 and curMonth <= endMonth):
-                return True
-        else:
-            if(curMonth >= startMonth and curMonth <= endMonth):
-                return True
+        #<------------------Chris' Comments------------------>
 
+        # if(curMonth >= startMonth):
+        #     if(curMonth >= startMonth and curMonth <= 12): # This will always be true, given the condition above
+        #         return True
+        #     elif (curMonth >= 1 and curMonth <= endMonth): # Can be added to the initial check condition in an or statment
+        #         return True
+        # else:
+        #     if(curMonth >= startMonth and curMonth <= endMonth): # This is the same condition as above, so I don't think condition can ever be true here
+        #         return True
+
+        # return False
+
+        #<------------------Chris' Suggestion------------------>
+
+        if(curMonth >= startMonth or curMonth <= endMonth): # currMonth will always be >= 1 or <= 12
+            return True
+        
         return False
+
 
 # O(n) time
 def availCritters(critterType, numCritters):
