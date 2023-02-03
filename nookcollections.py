@@ -68,7 +68,7 @@ def validMonth(monthRange, curMonth):
 
         #<------------------Chris' Suggestion------------------>
 
-        if(curMonth >= startMonth or curMonth <= endMonth): # currMonth will always be >= 1 or <= 12
+        if(curMonth >= startMonth and curMonth <= endMonth): # currMonth will always be >= 1 or <= 12
             return True
         
         return False
