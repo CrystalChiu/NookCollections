@@ -5,6 +5,7 @@ import requests
 from requests import get
 import re
 from datetime import datetime
+import numpy as np
 
 
 #<------------------Supplemental Functions------------------>
@@ -14,42 +15,64 @@ from datetime import datetime
 # Returns list of bools with TRUE in available months
 # Returns list of TRUE if available around the year
 def toArray_months(monthRange):
-    
+    #<------------------Chris' Comments------------------>
     months = list()
-    CONST_months = 12
+    CONST_months = 12 # I saw online that it might be best practice to keep constants in a separate file and reference that file
 
-    regex = r"(\d+)-(\d+)"
+    # Similar to other suggestions, should we restrict number of digits {1,2}?
+    # Based on your example above, should there be white space included in this pattern?
+    # It seems like these patterns are repeated, should we initialize regex pattern variables and reference those from a class or a file?
+    regex = r"(\d+)-(\d+)"  
     result = re.search(regex, monthRange)
 
-    if(result != None):
-        for i in range(CONST_months):
-            months.append(FALSE)
+    # if(result != None):
+    #     for i in range(CONST_months): # Would it be better to initialize it this way: months = [FALSE] * CONST_months
+    #         months.append(FALSE)
+
+    #     start = int(result.group(1)) # start month (1-12)
+    #     end = int(result.group(2)) # end month (1-12)
+
+    #     # find number of months btwn start & end (1 if same month)
+    #     numIterations = 0
+    #     if(end >= start):
+    #         numIterations = end - start
+    #     else:
+    #         numIterations = (end + CONST_months) - start
+    #     numIterations += 1
+
+    #     # adding each month number to included months array
+    #     monthNum = start
+
+    #     while numIterations != 0:
+    #         if(monthNum <= 12): # I think I might be missing something here, but I don't think the number of months can be more than 12
+    #             months[monthNum - 1] = TRUE
+    #         else:
+    #             months[monthNum - 13] = TRUE
+
+    #         monthNum += 1
+    #         numIterations -= 1
+    # else:
+    #     for i in range(CONST_months): # Would it be better to initialize it this way: months = [TRUE] * CONST_months
+    #         months.append(TRUE)
+
+    
+    #<------------------Chris' Suggestion------------------>
+
+    if(result == None):
+        months = [TRUE] * CONST_months
+    else:        
+        months = [FALSE] * CONST_months
 
         start = int(result.group(1)) # start month (1-12)
         end = int(result.group(2)) # end month (1-12)
 
-        # find number of months btwn start & end (1 if same month)
-        numIterations = 0
+        # Set index range of months based on start and end months
         if(end >= start):
-            numIterations = end - start
+            month_range = list(range(start-1,end))
         else:
-            numIterations = (end + CONST_months) - start
-        numIterations += 1
-
-        # adding each month number to included months array
-        monthNum = start
-
-        while numIterations != 0:
-            if(monthNum <= 12):
-                months[monthNum - 1] = TRUE
-            else:
-                months[monthNum - 13] = TRUE
-
-            monthNum += 1
-            numIterations -= 1
-    else:
-        for i in range(CONST_months):
-            months.append(TRUE)
+            month_range = list(range(end)) + list(range(start-1,CONST_months))
+        
+        months[month_range] = TRUE # Reuires numpy
 
     return months
 
@@ -57,12 +80,14 @@ def toArray_months(monthRange):
 # Returns list of bools with TRUE in available times
 # Returns list of TRUE if available around the clock
 def toArray_times(timeRange):
+    #<------------------Chris' Comments------------------>
+    # Similar to other suggestions, should we restrict number of digits {1,2}?
     times = list()
     regex = r"(\d+)(\w\w)\s-\s(\d+)(\w\w)"
     result = re.search(regex, timeRange)
 
-    if(result != None):
-        for i in range(24):
+    if(result != None):        
+        for i in range(24): # months = [FALSE] * 24
             times.append(FALSE)
 
         start_time = int(result.group(1))
@@ -78,8 +103,9 @@ def toArray_times(timeRange):
         for i in range ((end_time - start_time) + 1):
             times[start_time + i] = TRUE
     else:
-        for i in range(24):
+        for i in range(24): # months = [FALSE] * 24
             times.append(TRUE)
+
 
     return times
 
