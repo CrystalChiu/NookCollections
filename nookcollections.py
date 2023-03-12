@@ -36,7 +36,7 @@ def availCritters(critterType, numCritters):
         time = validTime(response.json()['availability']['time-array'], curTime)
 
         if(month and time):
-            result.append(response.json()['file-name']) # this can be changed to support the graphics in index.html
+            result.append(response.json()['id']) # this can be changed to support the graphics in index.html
 
     return result
 
@@ -63,7 +63,8 @@ def index():
     availSea = availCritters("sea", SEANUM)
 
     return render_template('index.html', availFish = availFish, availBugs = availBugs, availSea = availSea)
-
+    #return render_template('index.html', availFish = availFish)
+    
 if __name__ == '__main__':
     app.run()
 
